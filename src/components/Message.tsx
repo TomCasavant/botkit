@@ -43,53 +43,13 @@ export async function Message({ session, message }: MessageProps) {
   return (
     <article>
       <header>
-        {author?.id
-          ? (
-            <hgroup>
-              {authorIcon?.url && (
-                <img
-                  src={authorIcon.url instanceof Link
-                    ? authorIcon.url.href?.href
-                    : authorIcon.url.href}
-                  width={authorIcon.width ?? undefined}
-                  height={authorIcon.height ?? undefined}
-                  alt={authorIcon.name?.toString() ?? undefined}
-                  style="float: left; margin-right: 1em; height: 64px;"
-                />
-              )}
-              <h3>
-                <a href={author.url?.href?.toString() ?? author.id.href}>
-                  {author.name}
-                </a>
-              </h3>{" "}
-              <p>
-                <span style="user-select: all;">{authorHandle}</span>
-              </p>
-            </hgroup>
-          )
-          : <em>(Deleted account)</em>}
       </header>
-      <div
-        dangerouslySetInnerHTML={{ __html: `${message.content}` }}
-        lang={message.content instanceof LanguageString
-          ? message.content.language.compact()
-          : undefined}
-      />
-      <footer>
-        {message.published &&
-          (
-            <a href={message.url?.href?.toString() ?? message.id?.href}>
-              <small>
-                <time dateTime={message.published.toString()}>
-                  {message.published.toLocaleString("en", {
-                    dateStyle: "full",
-                    timeStyle: "short",
-                  })}
-                </time>
-              </small>
-            </a>
-          )}
-      </footer>
+      <h1
+      dangerouslySetInnerHTML={{ __html: `${message.content}` }}
+              lang={message.content instanceof LanguageString
+                ? message.content.language.compact()
+                : undefined}
+                ></h1>
     </article>
   );
 }

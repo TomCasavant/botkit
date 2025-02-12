@@ -80,6 +80,7 @@ app.get("/", async (c) => {
     ctx,
     offset ? { offset: Temporal.Instant.from(offset) } : {},
   );
+  const recentPost = messages[0] ?? null;
   const activityLink = ctx.getActorUri(bot.identifier);
   const feedLink = new URL("/feed.xml", url);
   let nextLink: URL | undefined;
@@ -94,104 +95,9 @@ app.get("/", async (c) => {
       activityLink={activityLink}
       feedLink={feedLink}
     >
-      <header class="container">
-        {image && (
-          <img
-            src={image.href}
-            width={imageWidth ?? undefined}
-            height={imageHeight ?? undefined}
-            alt={image instanceof Image
-              ? image.name?.toString() ?? undefined
-              : undefined}
-            style="width: 100%; margin-bottom: 1em;"
-          />
-        )}
-        <hgroup>
-          {icon && (
-            <img
-              src={icon.href}
-              width={iconWidth ?? undefined}
-              height={iconHeight ?? undefined}
-              style="float: left; margin-right: 1em; height: 72;"
-            />
-          )}
-          <h1>
-            <a href="/">{bot.name ?? bot.username}</a>
-          </h1>
-          <p>
-            <span style="user-select: all;">{handle}</span> &middot;{" "}
-            <a
-              href="/feed.xml"
-              rel="alternate"
-              type="application/atom+xml"
-              title="Atom feed"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width={18}
-                height={18}
-                viewBox="0 0 16 16"
-                aria-label="Atom feed"
-              >
-                <path
-                  fill="currentColor"
-                  d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm1.5 2.5c5.523 0 10 4.477 10 10a1 1 0 1 1-2 0a8 8 0 0 0-8-8a1 1 0 0 1 0-2m0 4a6 6 0 0 1 6 6a1 1 0 1 1-2 0a4 4 0 0 0-4-4a1 1 0 0 1 0-2m.5 7a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3"
-                >
-                </path>
-              </svg>
-            </a>{" "}
-            &middot;{" "}
-            <span>
-              {followersCount === 1
-                ? `1 follower`
-                : `${followersCount.toLocaleString("en")} followers`}
-            </span>{" "}
-            &middot;{" "}
-            <span>
-              {postsCount === 1
-                ? `1 post`
-                : `${postsCount.toLocaleString("en")} posts`}
-            </span>
-            {" "}
-          </p>
-        </hgroup>
-        {summary &&
-          (
-            <div
-              dangerouslySetInnerHTML={{ __html: summary }}
-            />
-          )}
-        {globalThis.Object.keys(properties).length > 0 && (
-          <table>
-            <tbody>
-              {globalThis.Object.entries(properties).map(([name, value]) => (
-                <tr>
-                  <th scope="row" style="width: 1%; white-space: nowrap;">
-                    <strong>{name}</strong>
-                  </th>
-                  <td
-                    dangerouslySetInnerHTML={{ __html: value }}
-                  />
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </header>
       <main class="container">
-        {messages.map((message) => (
-          <Message message={message} session={session} />
-        ))}
+        {recentPost && <Message message={recentPost} session={session} />}
       </main>
-      <footer class="container">
-        <nav style="display: block; text-align: end;">
-          {nextLink && (
-            <a rel="next" href={nextLink.href}>
-              Older posts &rarr;
-            </a>
-          )}
-        </nav>
-      </footer>
     </Layout>,
     {
       headers: {
